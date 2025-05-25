@@ -5,6 +5,9 @@ import bodyParser from 'body-parser'
 import cookieParser from 'cookie-parser'
 import { db } from './db/db.js'
 import { readdirSync } from 'fs'
+const multer = require("multer");
+
+const receiptRoutes = require("./routes/receiptRoutes");
 
 const app = express()
 const PORT = process.env.PORT || 8080
@@ -25,6 +28,7 @@ app.use(cookieParser())
 app.use(express.json())
 
 // set up api route
+app.use("/api/receipts", receiptRoutes);
 
 const server = () => {
   db()
