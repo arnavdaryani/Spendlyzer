@@ -1,38 +1,42 @@
 import React, { useState } from 'react';
-import { View, Button, Image, ActivityIndicator } from 'react-native';
-import * as ImagePicker from 'expo-image-picker';
+import { View, Button, Image, ActivityIndicator, Text } from 'react-native';
 
 export default function UploadReceiptScreen({ navigation }) {
   const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  // Mock pickImage (no real picker)
   const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ImagePicker.MediaTypeOptions.Images });
-    if (!result.cancelled) setImage(result.uri);
+    // In real you’d use expo-image-picker; here we just simulate one
+    setImage('https://via.placeholder.com/300x200.png?text=Receipt+Image');
   };
 
   const upload = async () => {
     setLoading(true);
-    const data = new FormData();
-    data.append('image', { uri: image, name: 'receipt.jpg', type: 'image/jpeg' });
-
-    const res = await fetch('https://your-api-url/api/receipts/upload', {
-      method: 'POST',
-      body: data
-    });
-    const newRec = await res.json();
-    setLoading(false);
-    navigation.navigate('Detail', { id: newRec._id });
+    // simulate network delay
+    setTimeout(() => {
+      setLoading(false);
+      // navigate to detail of mocked ID
+      navigation.navigate('Detail', { id: '1' });
+    }, 1000);
   };
 
   return (
-    <View style={{ flex:1, padding:16, justifyContent:'center' }}>
-      <Button title="Pick Image" onPress={pickImage} />
-      {image && <Image source={{ uri: image }} style={{ width: '100%', height: 200, marginVertical:16 }} />}
-      {loading
-        ? <ActivityIndicator/>
-        : image && <Button title="Upload" onPress={upload} />
-      }
+    <View style={{ flex: 1, padding: 16, justifyContent: 'center' }}>
+      <Button title="Pick Image (mock)" onPress={pickImage} />
+      {image && (
+        <Image
+          source={{ uri: image }}
+          style={{ width: '100%', height: 200, marginVertical: 16, backgroundColor: '#eee' }}
+        />
+      )}
+      {loading ? (
+        <ActivityIndicator size="large" />
+      ) : image ? (
+        <Button title="Upload (mock)" onPress={upload} />
+      ) : (
+        <Text style={{ marginTop: 12, textAlign: 'center' }}>No image selected</Text>
+      )}
     </View>
   );
 }
